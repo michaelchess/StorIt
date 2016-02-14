@@ -1,9 +1,12 @@
 document.onLoad = function(){
 	document.getElementById("SendDOM").onclick = function () {
-		chrome.runtime.sendMessage({salutation: "Good day"}, function(response) {
-			if(response.success == true){
-				console.log("Success from Popup");
-			}
+		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  			chrome.tabs.sendMessage(tabs[0].id, {salutation: true}, function(response) {
+  				console.log(response);
+  				if(response.success){
+					console.log("Success from Popup");
+				}
+  			});
 		});
 	}
 }
