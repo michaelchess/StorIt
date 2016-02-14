@@ -13,6 +13,8 @@ var buildQuery = function(queryString) {
 };
 
 var parseNouns = function(string) {
+	var cap = 4;
+	var init = 0;
 	var nouns = ""; 
 	var unTaggedWords = new Lexer().lex(string);
 	var taggedWords = new POSTagger().tag(unTaggedWords);
@@ -22,7 +24,9 @@ var parseNouns = function(string) {
 		console.log(word)
 		//["DT", "EX", "VBP", ":", ",", "TO", "WP"]
 		if (word[1].slice(0,2) == "NN") {
-			nouns+=word[0];
+			init++;
+			nouns += word[0];
+			if (init == cap) break;
 			if (i < taggedWords.length-1) nouns+=" ";
 		}
 	}
