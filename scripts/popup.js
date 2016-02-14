@@ -12,6 +12,7 @@ window.onload = function(){
 			for (var i = 0; i < request.results.length; i++) {
 				var resultsElement = document.getElementById("results");
 				var div = document.createElement("div");
+				div.setAttribute("class", "result");
 				div.innerHTML = request.results[i]["html"];
 				resultsElement.appendChild(div);
 			}
