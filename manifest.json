@@ -5,7 +5,7 @@
   "description": "Instantly get academic journals related to the page you're on.",
   "version": "1.0",
   "background": {
-    "scripts": ["scripts/background.js"],
+    "scripts": ["scripts/vendor/jquery.min.js", "scripts/background.js"],
     "persistent": true
   },
   "content_scripts": [
