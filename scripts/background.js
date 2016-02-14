@@ -38,7 +38,21 @@ var getJstorResults = function(DOM) {
 	console.log(DOM);
 	var document = $(DOM);
 	var resultRows = document.find(".row.result-item");
-	console.log(resultRows);
+	var slicedResultsRows = resultRows.slice(0,3);
+
+	var results = [];
+
+	for (var i = 0; i < slicedResultsRows.length; i++) {
+		var result = {};
+		var snippet = $(slicedResultsRows[i]).find(".snippetText");
+		snippet.remove();
+		var list = $(slicedResultsRows[i]).find(".format.inline-list");
+		list.remove();
+		result["html"] = $(slicedResultsRows[i]).html();
+		results.push(result);
+	}
+	
+	return results;
 };
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
@@ -59,8 +73,13 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
             	var container = document.createElement("div");
             	container.innerHTML = data;
 
-				getJstorResults(container);
-				sendResponse({success: true});
+				var results = getJstorResults(container);
+				console.log(results);
+				chrome.runtime.sendMessage({results: results}, function(response){
+					if (response.success) {
+						console.log("SUCCESS");
+					}
+				});
 			},
 			error: function(jxhr){
 				console.log(jxhr.responseText);

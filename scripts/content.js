@@ -4,9 +4,10 @@ function contentFunction(){
 			console.log(request);
 			if(request.salutation){
 				chrome.runtime.sendMessage({DOM: document.documentElement.innerHTML}, function(response) {
+					
 					if(response.success == true){
 						console.log("Success from Content");
-						sendResponse({success: true});
+						sendResponse({success: true, results: response.results});
 					}
 				});
 			}
