@@ -3,4 +3,3 @@ chrome.runtime.sendMessage({DOM: document.documentElement.innerHTML}, function(r
 		console.log("Success");
 	}
 });
-//document.documentElement.innerHTML();
