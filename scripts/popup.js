@@ -1,4 +1,4 @@
-document.onLoad(){
+document.onLoad = function(){
 	document.getElementById("SendDOM").onclick = function () {
 		chrome.runtime.sendMessage({salutation: "Good day"}, function(response) {
 			if(response.success == true){
