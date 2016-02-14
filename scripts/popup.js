@@ -3,6 +3,7 @@ window.onload = function(){
 	function onclick(source){
 		document.getElementById("results").innerHTML = "";
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+  			console.log(source);
   			chrome.tabs.sendMessage(tabs[0].id, {salutation: true, source: source}, function(response) {
   				console.log(response);
   			});
@@ -12,7 +13,7 @@ window.onload = function(){
 	document.getElementById("jstor").onclick = function () {
 		onclick("jstor");
 	}
-	
+
 	document.getElementById("googlescholar").onclick = function () {
 		onclick("googlescholar");
 	}

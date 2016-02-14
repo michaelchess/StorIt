@@ -72,6 +72,29 @@ var getJstorResults = function(DOM) {
 	return results;
 };
 
+var getGoogleScholarResults = function(DOM){
+	console.log(DOM);
+	var document = $(DOM);
+	var resultRows = document.find(".gs_r");
+	var slicedResultsRows = resultRows.slice(0, 3);
+
+	var results = [];
+
+	for(var i = 0; i < slicedResultsRows.length; i++){
+		var result = {};
+		var snippet = $(slicedResultsRows[i]).find(".gs_rs");
+		snippet.remove();
+		var auxLinks= $(slicedResultsRows[i]).find(".gs_fl");
+		auxLinks.remove();
+
+		result["html"] = $(slicedResultsRows[i]).html();
+		results.push(result);
+	}
+	return results;
+}
+
+
+
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.DOM) {
 		var HTMLString = request.DOM;
@@ -81,16 +104,29 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		var title = dom.title;
 		var parsedTitle = parseNouns(title);
 		var query = buildQuery(parsedTitle);
+		if(request.source == "jstor"){
+			var url = "http://www.jstor.org/action/doBasicSearch?Query="+query+"&acc=on&wc=on&fc=off&group=none";
+		} else if(request.source == "googlescholar"){
+			var url = "https://scholar.google.com/scholar?hl=en&q="+query+"&btnG=&as_sdt=1%2C33&as_sdtp="
+		} else {
+			var url = "http://www.jstor.org/action/doBasicSearch?Query="+query+"&acc=on&wc=on&fc=off&group=none";
+		}
 		console.log(query);
 		$.ajax({
             type: "GET", //or GET
-            url: "http://www.jstor.org/action/doBasicSearch?Query="+query+"&acc=on&wc=on&fc=off&group=none",
+            url: url,
             success: function(data){
             	// console.log(data);
             	var container = document.createElement("div");
             	container.innerHTML = data;
 
-				var results = getJstorResults(container);
+				if(request.source == "jstor"){
+					var results = getJstorResults(container);
+				} else if(request.source == "googlescholar"){
+					var results = getGoogleScholarResults(container);
+				} else {
+					var results = getJstorResults(container);
+				}
 				console.log(results);
 				chrome.runtime.sendMessage({results: results}, function(response){
 					if (response.success) {
