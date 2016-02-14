@@ -32,6 +32,9 @@ var parseNouns = function(string) {
 
 var getJstorResults = function(DOM) {
 	console.log(DOM);
+	var document = $(DOM);
+	var resultRows = document.find(".row.result-item");
+	console.log(resultRows);
 };
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
