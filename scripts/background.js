@@ -56,6 +56,15 @@ var getJstorResults = function(DOM) {
 		inputs.remove();
 		var imgs = $(slicedResultsRows[i]).find("img");
 		imgs.remove();
+
+		// replace relative links
+		var links = $(slicedResultsRows[i]).find("a");
+		for (var x = 0; x < links.length; x++) {
+			var newLink = "http://www.jstor.org"+$(links[x]).attr("href");
+			$(links[x]).attr("href", newLink);
+			$(links[x]).attr("target", "_blank");
+		}
+
 		result["html"] = $(slicedResultsRows[i]).html();
 		results.push(result);
 	}
