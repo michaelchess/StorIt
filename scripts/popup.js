@@ -11,10 +11,14 @@ window.onload = function(){
 	}
 
 	document.getElementById("jstor").onclick = function () {
+		document.getElementById("googlescholar").setAttribute("class", "select");
+		document.getElementById("jstor").setAttribute("class", "select selected");
 		onclick("jstor");
 	}
 
 	document.getElementById("googlescholar").onclick = function () {
+		document.getElementById("jstor").setAttribute("class", "select");
+		document.getElementById("googlescholar").setAttribute("class", "select selected");
 		onclick("googlescholar");
 	}
 
