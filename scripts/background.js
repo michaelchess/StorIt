@@ -18,12 +18,14 @@ var parseNouns = function(string) {
 	var nouns = ""; 
 	var unTaggedWords = new Lexer().lex(string);
 	var taggedWords = new POSTagger().tag(unTaggedWords);
+	var badWords = ["|"];
 
 	for (var i = 0; i < taggedWords.length; i++) {
 		var word = taggedWords[i];
 		console.log(word)
 		//["DT", "EX", "VBP", ":", ",", "TO", "WP"]
-		if (word[1].slice(0,2) == "NN") {
+
+		if (word[1].slice(0,2) == "NN" && badWords.indexOf(word[0]) == -1) {
 			init++;
 			nouns += word[0];
 			if (init == cap) break;
@@ -44,10 +46,16 @@ var getJstorResults = function(DOM) {
 
 	for (var i = 0; i < slicedResultsRows.length; i++) {
 		var result = {};
-		var snippet = $(slicedResultsRows[i]).find(".snippetText");
+		var snippet = $(slicedResultsRows[i]).find(".snippetText, .snippets.mlm");
 		snippet.remove();
 		var list = $(slicedResultsRows[i]).find(".format.inline-list");
 		list.remove();
+		var hidden = $(slicedResultsRows[i]).find(".visuallyhidden");
+		hidden.remove();
+		var inputs = $(slicedResultsRows[i]).find("input");
+		inputs.remove();
+		var imgs = $(slicedResultsRows[i]).find("img");
+		imgs.remove();
 		result["html"] = $(slicedResultsRows[i]).html();
 		results.push(result);
 	}
