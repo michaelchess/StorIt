@@ -36,26 +36,28 @@ var getJstorResults = function(DOM) {
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.DOM) {
-		var HTMLString = request.getHTML;
-		var doctype = document.implementation.createDocumentType( 'html', '', '');
-		var dom = document.implementation.createDocument('', 'html', doctype);
+		var HTMLString = request.DOM;
+		var dom = document.implementation.createHTMLDocument('newDOM');
 		dom.documentElement.innerHTML = HTMLString;
 
 		var title = dom.title;
-		console.log(dom);
-		var query = buildQuery(title);
-
+		var parsedTitle = parseNouns(title);
+		var query = buildQuery(parsedTitle);
+		console.log(query);
 		$.ajax({
             type: "GET", //or GET
             url: "http://www.jstor.org/action/doBasicSearch?Query="+query+"&acc=on&wc=on&fc=off&group=none",
             success: function(data){
-            	console.log(data);
+            	// console.log(data);
             	var container = document.createElement("div");
             	container.innerHTML = data;
+
 				getJstorResults(container);
+				sendResponse({success: true});
 			},
 			error: function(jxhr){
-			   console.log(jxhr.responseText);
+				console.log(jxhr.responseText);
+				sendResponse({success: false});
 			}
         });
     }
