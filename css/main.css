@@ -4,10 +4,18 @@ body {
 	max-height: 400px;
 	overflow-y: auto;
 }
-#results {
 
+#loading {
+	width: 100px;
+	margin: 25px;
+	opacity: .8;
+}
+
+#results {
+	text-align: center;
 }
 .result {
+	text-align: left;
 	background-color: rgb(255,255,255);
 	border: 1px solid #ccc;
 	margin: 10px;
@@ -59,7 +67,7 @@ span.gs_ct1, span.gs_ct2 {
 }
 
 .select:hover{
-	opacity: .7;	
+	opacity: .8;	
 	background-color: #fff;
 	color: #69D2E7;
 	cursor: pointer;	

@@ -12,13 +12,18 @@ var buildQuery = function(queryString) {
 	return query;
 };
 
+var sanitizeString = function(string) {
+	var sanitizedString = string.replace(/['"]+/g, '');
+	return sanitizedString;
+}
+
 var parseNouns = function(string) {
 	var cap = 4;
 	var init = 0;
 	var nouns = ""; 
 	var unTaggedWords = new Lexer().lex(string);
 	var taggedWords = new POSTagger().tag(unTaggedWords);
-	var badWords = ["|"];
+	var badWords = ["|", ":"];
 
 	for (var i = 0; i < taggedWords.length; i++) {
 		var word = taggedWords[i];
@@ -90,9 +95,14 @@ var getGoogleScholarResults = function(DOM){
 
 		var links = $(slicedResultsRows[i]).find("a");
 		for(var x = 0; x < links.length; x++){
-			var newLink = "https://scholar.google.com"+$(links[x]).attr("href");
-			$(links[x]).attr("href", newLink);
-			$(links[x]).attr("target", "_blank");
+			var currentHref = $(links[x]).attr("href");
+			if (currentHref.charAt(0) === "/") {
+				var newLink = "https://scholar.google.com"+$(links[x]).attr("href");
+				$(links[x]).attr("href", newLink);
+				
+			}
+			$(links[x]).attr("target", "_blank");	
+			
 		}
 
 		result["html"] = $(slicedResultsRows[i]).html();
@@ -108,10 +118,14 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		var HTMLString = request.DOM;
 		var dom = document.implementation.createHTMLDocument('newDOM');
 		dom.documentElement.innerHTML = HTMLString;
-
-		var title = dom.title;
-		var parsedTitle = parseNouns(title);
-		var query = buildQuery(parsedTitle);
+		try {
+			var title = sanitizeString(dom.title);
+			var parsedTitle = parseNouns(title);
+			var query = buildQuery(parsedTitle);	
+		} catch (e) {
+			var query = "";
+		}
+		
 		if(request.source == "jstor"){
 			var url = "http://www.jstor.org/action/doBasicSearch?Query="+query+"&acc=on&wc=on&fc=off&group=none";
 		} else if(request.source == "googlescholar"){
