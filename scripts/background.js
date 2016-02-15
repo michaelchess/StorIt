@@ -119,7 +119,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		} else {
 			var url = "http://www.jstor.org/action/doBasicSearch?Query="+query+"&acc=on&wc=on&fc=off&group=none";
 		}
-		
+
 		console.log(query);
 		$.ajax({
             type: "GET", //or GET
@@ -137,6 +137,9 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 					var results = getJstorResults(container);
 				}
 				console.log(results);
+				if (results.length == 0) {
+					results.push({"html": "<p>No Journals Found :(</p>"})
+				}
 				chrome.runtime.sendMessage({results: results}, function(response){
 					if (response.success) {
 						console.log("SUCCESS");
