@@ -73,7 +73,28 @@ span.gs_ct1, span.gs_ct2 {
 	cursor: pointer;	
 }
 
+.select:active {
+	background-color: #fff;
+	color: #69D2E7;
+	opacity: 1;
+}
 .select.selected {
 	background-color: #fff;
 	color: #69D2E7;
+}
+
+#moreresults {
+	font-size: 20px;
+	font-family: helvetica;
+	padding: 10px 15px;
+	color: #FFF;
+}
+
+#moreresults:hover {
+	opacity: .8;
+	cursor: pointer;
+}
+
+#moreresults:active {
+	opacity: 1;
 }

@@ -45,13 +45,13 @@ window.onload = function(){
 			var resultsElement = document.getElementById("results");
 			resultsElement.innerHTML = "";
 			console.log(request);
-			if(typeof request.url != "undefined"){
-				console.log(request.url);
-				var url = document.createElement("div");
-				url.setAttribute("class", "select");
-				url.innerHTML = "<a href=\""+request.url+"\" target=\"_blank\">Source Page:</a>";
-				resultsElement.appendChild(url);
-			}
+			// if(typeof request.url != "undefined"){
+			// 	console.log(request.url);
+			// 	var url = document.createElement("div");
+			// 	url.setAttribute("class", "select");
+			// 	url.innerHTML = "<a href=\""+request.url+"\" target=\"_blank\">Source Page:</a>";
+			// 	resultsElement.appendChild(url);
+			// }
 
 			for (var i = 0; i < request.results.length; i++) {
 				var div = document.createElement("div");
