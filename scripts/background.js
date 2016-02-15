@@ -147,10 +147,9 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
             type: "GET", //or GET
             url: url,
             success: function(data){
-            	// console.log(data);
             	var container = document.createElement("div");
             	container.innerHTML = data;
-
+            	console.log(data);
 				if(request.source == "jstor"){
 					var results = getJstorResults(container, request.more);
 				} else if(request.source == "googlescholar"){
@@ -162,7 +161,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				if (results.length == 0) {
 					results.push({"html": "<p>No Journals Found :(</p>"})
 				}
-				chrome.runtime.sendMessage({results: results}, function(response){
+				chrome.runtime.sendMessage({results: results, url: this.url}, function(response){
 					if (response.success) {
 						console.log("SUCCESS");
 					}

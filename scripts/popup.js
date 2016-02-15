@@ -25,10 +25,17 @@ window.onload = function(){
 	}
 
 	document.getElementById("moreresults").onclick = function () {
-		if(document.getElementById("jstor").getAttribute("class") == "select selected"){
-			onclick("jstor", true);
+		if(document.getElementById("moreresults").innerHTML == "Less..."){
+			document.getElementById("moreresults").innerHTML = "More...";
+			var more = false;
 		} else {
-			onclick("googlescholar", true);
+			document.getElementById("moreresults").innerHTML = "Less...";
+			var more = true;
+		}
+		if(document.getElementById("jstor").getAttribute("class") == "select selected"){
+			onclick("jstor", more);
+		} else {
+			onclick("googlescholar", more);
 		}
 	}
 
@@ -37,7 +44,15 @@ window.onload = function(){
 			sendResponse({success: true});
 			var resultsElement = document.getElementById("results");
 			resultsElement.innerHTML = "";
-			
+			console.log(request);
+			if(typeof request.url != "undefined"){
+				console.log(request.url);
+				var url = document.createElement("div");
+				url.setAttribute("class", "select");
+				url.innerHTML = "<a href=\""+request.url+"\" target=\"_blank\">Source Page:</a>";
+				resultsElement.appendChild(url);
+			}
+
 			for (var i = 0; i < request.results.length; i++) {
 				var div = document.createElement("div");
 				div.setAttribute("class", "result");
