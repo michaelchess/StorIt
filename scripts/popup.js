@@ -14,7 +14,7 @@ window.onload = function(){
 	document.getElementById("jstor").onclick = function () {
 		document.getElementById("googlescholar").setAttribute("class", "select");
 		document.getElementById("jstor").setAttribute("class", "select selected");
-		// document.getElementById("moreresults").
+		document.getElementById("moreresults").innerHTML = "More...";
 		onclick("jstor");
 	}
 
