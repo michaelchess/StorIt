@@ -41,6 +41,7 @@ window.onload = function(){
 
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		if (request.results) {
+			
 			sendResponse({success: true});
 			var resultsElement = document.getElementById("results");
 			resultsElement.innerHTML = "";
@@ -60,7 +61,12 @@ window.onload = function(){
 				resultsElement.appendChild(div);
 			}
 			console.log("Success from Popup");
-			document.getElementById("moreresults").style.display = "inline";
+			console.log(request.empty)
+			if (request.empty) {
+				document.getElementById("moreresults").style.display = "none"; console.log("jared");
+			} else {
+				document.getElementById("moreresults").style.display = "inline";				
+			}
 		}
 	});
 }

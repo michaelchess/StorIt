@@ -148,6 +148,8 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
             url: url,
             success: function(data){
             	var container = document.createElement("div");
+				var empty = false;
+
             	container.innerHTML = data;
             	console.log(data);
 				if(request.source == "jstor"){
@@ -157,11 +159,13 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				} else {
 					var results = getJstorResults(container, request.more);
 				}
+
 				console.log(results);
 				if (results.length == 0) {
+					empty = true;
 					results.push({"html": "<p>No Journals Found :(</p>"})
 				}
-				chrome.runtime.sendMessage({results: results, url: this.url}, function(response){
+				chrome.runtime.sendMessage({results: results, url: this.url, empty: empty}, function(response){
 					if (response.success) {
 						console.log("SUCCESS");
 					}
