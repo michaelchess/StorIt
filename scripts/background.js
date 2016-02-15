@@ -87,6 +87,14 @@ var getGoogleScholarResults = function(DOM){
 		var auxLinks= $(slicedResultsRows[i]).find(".gs_fl");
 		auxLinks.remove();
 
+
+		var links = $(slicedResultsRows[i]).find("a");
+		for(var x = 0; x < links.length; x++){
+			var newLink = "https://scholar.google.com"+$(links[x]).attr("href");
+			$(links[x]).attr("href", newLink);
+			$(links[x]).attr("target", "_blank");
+		}
+
 		result["html"] = $(slicedResultsRows[i]).html();
 		results.push(result);
 	}
