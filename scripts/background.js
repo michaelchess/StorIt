@@ -41,11 +41,15 @@ var parseNouns = function(string) {
 	return (nouns.length > 0) ? nouns : null;
 };
 
-var getJstorResults = function(DOM) {
+var getJstorResults = function(DOM, more) {
 	console.log(DOM);
 	var document = $(DOM);
 	var resultRows = document.find(".row.result-item");
-	var slicedResultsRows = resultRows.slice(0,3);
+	if(more){
+		var slicedResultsRows = resultRows;
+	} else {
+		var slicedResultsRows = resultRows.slice(0, 3);
+	}
 
 	var results = [];
 
@@ -77,11 +81,15 @@ var getJstorResults = function(DOM) {
 	return results;
 };
 
-var getGoogleScholarResults = function(DOM){
+var getGoogleScholarResults = function(DOM, more){
 	console.log(DOM);
 	var document = $(DOM);
 	var resultRows = document.find(".gs_r");
-	var slicedResultsRows = resultRows.slice(0, 3);
+	if(more){
+		var slicedResultsRows = resultRows;
+	} else {
+		var slicedResultsRows = resultRows.slice(0, 3);
+	}
 
 	var results = [];
 
@@ -144,11 +152,11 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
             	container.innerHTML = data;
 
 				if(request.source == "jstor"){
-					var results = getJstorResults(container);
+					var results = getJstorResults(container, request.more);
 				} else if(request.source == "googlescholar"){
-					var results = getGoogleScholarResults(container);
+					var results = getGoogleScholarResults(container, request.more);
 				} else {
-					var results = getJstorResults(container);
+					var results = getJstorResults(container, request.more);
 				}
 				console.log(results);
 				if (results.length == 0) {

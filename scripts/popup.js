@@ -1,11 +1,11 @@
 window.onload = function(){
 
-	function onclick(source){
-
+	function onclick(source, more){
+		document.getElementById("moreresults").style.display = "none";
 		document.getElementById("results").innerHTML = "<img id='loading' src='load.gif'></img>";
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
   			console.log(source);
-  			chrome.tabs.sendMessage(tabs[0].id, {salutation: true, source: source}, function(response) {
+  			chrome.tabs.sendMessage(tabs[0].id, {salutation: true, source: source, more: more}, function(response) {
   				console.log(response);
   			});
 		});
@@ -14,6 +14,7 @@ window.onload = function(){
 	document.getElementById("jstor").onclick = function () {
 		document.getElementById("googlescholar").setAttribute("class", "select");
 		document.getElementById("jstor").setAttribute("class", "select selected");
+		// document.getElementById("moreresults").
 		onclick("jstor");
 	}
 
@@ -21,6 +22,14 @@ window.onload = function(){
 		document.getElementById("jstor").setAttribute("class", "select");
 		document.getElementById("googlescholar").setAttribute("class", "select selected");
 		onclick("googlescholar");
+	}
+
+	document.getElementById("moreresults").onclick = function () {
+		if(document.getElementById("jstor").getAttribute("class") == "select selected"){
+			onclick("jstor", true);
+		} else {
+			onclick("googlescholar", true);
+		}
 	}
 
 	chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
@@ -36,6 +45,7 @@ window.onload = function(){
 				resultsElement.appendChild(div);
 			}
 			console.log("Success from Popup");
+			document.getElementById("moreresults").style.display = "inline";
 		}
 	});
 }
