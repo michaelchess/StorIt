@@ -12,8 +12,25 @@ var buildQuery = function(queryString) {
 	return query;
 };
 
-var sanitizeString = function(string) {
+var removeSubstring = function(string, substring) {
+	var string = string.substr(0, string.indexOf(substring)) + string.substr(string.indexOf(substring)+substring.length); 
+	return string;
+} 
+
+var sanitizeString = function(string, isWiki) {
+	console.log(isWiki)
 	var sanitizedString = string.replace(/['"]+/g, '');
+	if (isWiki) {
+		var lowerSanitizedString = sanitizedString.toLowerCase();
+		if (lowerSanitizedString.indexOf("wikipedia") > -1) {
+			sanitizedString = removeSubstring(lowerSanitizedString, "wikipedia");
+
+			if (sanitizedString.indexOf("encyclopedia") > -1) {
+				sanitizedString = removeSubstring(sanitizedString, "encyclopedia");
+			} 
+		}
+	}
+	console.log(sanitizedString);
 	return sanitizedString;
 }
 
@@ -30,7 +47,7 @@ var parseNouns = function(string) {
 		console.log(word)
 		//["DT", "EX", "VBP", ":", ",", "TO", "WP"]
 
-		if (word[1].slice(0,2) == "NN" && badWords.indexOf(word[0]) == -1) {
+		if ((word[1].slice(0,2) == "NN" || word[1] == "VBG") && badWords.indexOf(word[0]) == -1) {
 			init++;
 			nouns += word[0];
 			if (init == cap) break;
@@ -100,7 +117,6 @@ var getGoogleScholarResults = function(DOM, more){
 		var auxLinks= $(slicedResultsRows[i]).find(".gs_fl");
 		auxLinks.remove();
 
-
 		var links = $(slicedResultsRows[i]).find("a");
 		for(var x = 0; x < links.length; x++){
 			var currentHref = $(links[x]).attr("href");
@@ -125,7 +141,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		var dom = document.implementation.createHTMLDocument('newDOM');
 		dom.documentElement.innerHTML = HTMLString;
 		try {
-			var title = sanitizeString(dom.title);
+			var title = sanitizeString(dom.title, request.isWiki);
 			var parsedTitle = parseNouns(title);
 			var query = buildQuery(parsedTitle);	
 		} catch (e) {
@@ -149,7 +165,6 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 				var empty = false;
 
             	container.innerHTML = data;
-            	console.log(data);
 				if(request.source == "jstor"){
 					var results = getJstorResults(container, request.more);
 				} else if(request.source == "googlescholar"){
