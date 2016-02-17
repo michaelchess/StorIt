@@ -1,6 +1,7 @@
 window.onload = function(){
 
 	function onclick(source, more){
+		document.getElementById("moreresults").innerHTML = "More...";
 		document.getElementById("moreresults").style.display = "none";
 		document.getElementById("results").innerHTML = "<img id='loading' src='load.gif'></img>";
 		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
