@@ -1,8 +1,7 @@
 body {
 	width: 400px;
 	background-color: #69D2E7;
-	max-height: 400px;
-	overflow-y: auto;
+	max-height: 420px;
 }
 
 #loading {
@@ -13,6 +12,9 @@ body {
 
 #results {
 	text-align: center;
+	max-height: 400px;
+	margin-bottom: 5px;
+	overflow-y: auto;	
 }
 .result {
 	text-align: left;

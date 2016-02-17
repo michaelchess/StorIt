@@ -119,8 +119,6 @@ var getGoogleScholarResults = function(DOM, more){
 	return results;
 }
 
-
-
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.DOM) {
 		var HTMLString = request.DOM;
