@@ -58,6 +58,87 @@ var parseNouns = function(string) {
 	return (nouns.length > 0) ? nouns : null;
 };
 
+var parseCommonNouns = function(string){
+	var cap = 4;
+	var init = 0;
+	var nouns = {};
+	var topFour = ["", "", "", ""];
+	nouns[""] = -1;
+	var unTaggedWords = new Lexer().lex(string);
+	var taggedWords = new POSTagger().tag(unTaggedWords);
+	var badWords = ["|", ":"];
+
+	for(var i = 0; i < taggedWords.length; i++){
+		var word = taggedWords[i];
+
+
+		if((word[1].slice(0,2) == "NN" || word[1] == "VBG") && badWords.indexOf(word[0]) == -1){
+			// console.log(word[0]);
+			if(!(word[0] in nouns)){
+				// var w = word[0];
+				// nouns.push({w: 1});
+				nouns[word[0]] = 1;
+			} else {
+				nouns[word[0]] += 1;
+			}
+			placeInTopFour(nouns, topFour, word[0], nouns[word[0]]);
+		}
+	}
+	console.log(topFour);
+	var returns = topFour[3]+" "+topFour[2]+" "+topFour[1]+" "+topFour[0];
+	return (returns.length > 0) ? returns : null;
+}
+
+var placeInTopFour = function(nouns, topFour, key, value){
+	// console.log(key);
+	// var pos = topFour.indexOf(word[0]);
+	// if(pos > -1){
+	// 	console.log("AlreadyThere");
+	// 	while(pos < topFour.length-1){
+	// 		if(topFour[pos+1] > topFour[pos]){
+	// 			var holder = topFour[pos+1];
+	// 			topFour[pos+1] = topFour[pos];
+	// 			topFour[pos] = holder;
+	// 		}
+	// 		pos++;
+	// 	}
+	// } else {
+	var found = false;
+	for(var i = 0; i < topFour.length; i++){
+		if(topFour[i] == key){
+			found = true;
+			var pos = i;
+			while(pos < topFour.length-1){
+				if(topFour[pos+1] > topFour[pos]){
+					var holder = topFour[pos+1];
+					topFour[pos+1] = topFour[pos];
+					topFour[pos] = holder;
+				}
+				pos++;
+			}
+			break;
+		}
+	}
+	if(found == false){
+		for(var i = 0; i < topFour.length; i++){
+			// console.log(value);
+			// console.log(nouns[topFour[i]]);
+			if(value > nouns[topFour[i]]){
+				// console.log(value);
+				if(i == 0){
+					topFour[i] = key;
+				} else {
+					topFour[i-1] = topFour[i];
+					topFour[i] = key;
+				}
+			} else {
+				break;
+			}
+		}
+	}
+	// }
+}
+
 var getJstorResults = function(DOM, more) {
 	console.log(DOM);
 	var document = $(DOM);
@@ -140,11 +221,18 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		var HTMLString = request.DOM;
 		var dom = document.implementation.createHTMLDocument('newDOM');
 		dom.documentElement.innerHTML = HTMLString;
+		console.log(parseCommonNouns(sanitizeString(dom.title, request.isWiki)));
 		try {
 			var title = sanitizeString(dom.title, request.isWiki);
 			var parsedTitle = parseNouns(title);
+			console.log("HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO ");
+			console.log("HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO ");
+			console.log(parseCommonNouns(title));
+			console.log("HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO ");
 			var query = buildQuery(parsedTitle);	
 		} catch (e) {
+			console.log("ERROR ERROR ERROR");
+			console.log(e);
 			var query = "";
 		}
 		
