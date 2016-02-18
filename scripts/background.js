@@ -70,7 +70,9 @@ var parseCommonNouns = function(string){
 
 	for(var i = 0; i < taggedWords.length; i++){
 		var word = taggedWords[i];
-
+		if(word[0].length == 1){
+			continue;
+		}
 
 		if((word[1].slice(0,2) == "NN" || word[1] == "VBG") && badWords.indexOf(word[0]) == -1){
 			// console.log(word[0]);
@@ -218,10 +220,17 @@ var getGoogleScholarResults = function(DOM, more){
 
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.DOM) {
+
+
 		var HTMLString = request.DOM;
 		var dom = document.implementation.createHTMLDocument('newDOM');
 		dom.documentElement.innerHTML = HTMLString;
-		console.log(parseCommonNouns(sanitizeString(dom.title, request.isWiki)));
+
+		var article = new Readability(request.uri, dom).parse();
+		var content = document.createElement("div");
+		content.innerHTML = article.content;
+		console.log(parseCommonNouns(sanitizeString(content.innerText, request.isWiki)));
+
 		try {
 			var title = sanitizeString(dom.title, request.isWiki);
 			var parsedTitle = parseCommonNouns(title);
