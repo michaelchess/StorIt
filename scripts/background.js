@@ -232,13 +232,18 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		console.log(parseCommonNouns(sanitizeString(content.innerText, request.isWiki)));
 
 		try {
-			var title = sanitizeString(dom.title, request.isWiki);
-			var parsedTitle = parseCommonNouns(title);
-			console.log("HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO ");
-			console.log("HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO ");
-			console.log(parseCommonNouns(title));
-			console.log("HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO ");
-			var query = buildQuery(parsedTitle);	
+			var string;
+			var title = article.title || dom.title;
+			console.log("TITLE:",title);
+			if (article.title.split(" ").length <= 12) {
+				string = content.innerText;
+			} else {
+				string = title;
+			}
+
+			var sanitizedString = sanitizeString(string, request.isWiki);
+			var parsedString = parseCommonNouns(sanitizedString);
+			var query = buildQuery(parsedString);	
 		} catch (e) {
 			console.log("ERROR ERROR ERROR");
 			console.log(e);
