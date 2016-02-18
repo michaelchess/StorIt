@@ -66,7 +66,7 @@ var parseCommonNouns = function(string){
 	nouns[""] = -1;
 	var unTaggedWords = new Lexer().lex(string);
 	var taggedWords = new POSTagger().tag(unTaggedWords);
-	var badWords = ["|", ":"];
+	var badWords = ["|", ":", "I", "-"];
 
 	for(var i = 0; i < taggedWords.length; i++){
 		var word = taggedWords[i];
@@ -224,7 +224,7 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 		console.log(parseCommonNouns(sanitizeString(dom.title, request.isWiki)));
 		try {
 			var title = sanitizeString(dom.title, request.isWiki);
-			var parsedTitle = parseNouns(title);
+			var parsedTitle = parseCommonNouns(title);
 			console.log("HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO ");
 			console.log("HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO ");
 			console.log(parseCommonNouns(title));
